@@ -12,19 +12,23 @@ def divide_packages(stream, frame_len=7) -> list:
     stream (str): will be devided into smaller strings of given length
     frame_len (int): length of returned substrings 
     """
+
     return [stream[i:i+frame_len] for i in range(0, len(stream), frame_len)]
 
 
 def crc(stream) -> str:
     """Returns crc8 for given string"""
+
     return bin(int(crc8.crc8(stream.encode('utf-8'))
             .hexdigest(), 16))[2:].zfill(8)
+
 
 def pack(p) -> str:
     """Returns framed message with crc
     Parameters:
     p (str): message that will be framed
     """
+
     # Stworzenie crc
     c = crc(p)
     p = [bin(e.encode('utf-8')[0])[2:].zfill(8) for e in p]
@@ -43,11 +47,13 @@ def pack(p) -> str:
     ret = '01111110' + ret
     return ret
 
+
 def unpack(p) -> str:
     """Returns message from frame
     Parameters:
     p (str): framed message
     """
+
     # 'Zdejmowanie' ramki
     p = p.replace('01111110', '')
     p = p.replace('01111110', '')
@@ -79,20 +85,24 @@ def make_z(name='Z.txt', count=100):
     name (str, optional): path to the new file
     count (int, optional): number of characters created in the file
     """
+
     f = open(name, 'w')
     text = ''.join([random.choice(alph) for i in range(count)])
     f.write(text)
     f.close()
+
 
 def readfile(z) -> str:
     """Returns content of file z
     Parameters:
     z (str): path of the file
     """
+
     f = open(z, 'r')
     raw = f.read()
     f.close()
     return raw
+
 
 def save(tab, name, seperator = ''):
     """ Saves strings in tab to file
@@ -101,6 +111,7 @@ def save(tab, name, seperator = ''):
     name (str): filename
     seperator (str, optional): seperates elements of tab in the file
     """
+
     f = open(name, 'w')
     for p in tab:
         if p == 0:
@@ -109,7 +120,10 @@ def save(tab, name, seperator = ''):
             f.write(p)
     f.close()
 
+
 def main():
+    """Example program"""
+
     make_z()
     stream = readfile('Z.txt')
     packages = divide_packages(stream)
@@ -129,6 +143,7 @@ def main():
     
     save(temp2, 'Z2.txt')
     print(temp2)
+
 
 if __name__ == "__main__":
     main()
