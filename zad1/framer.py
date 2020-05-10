@@ -4,7 +4,7 @@ import random
 import crc8
 
 
-alph = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+alph = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?'
 
 def divide_packages(stream, frame_len=7) -> list:
     """Devides given stream into list of strings

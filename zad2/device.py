@@ -20,10 +20,10 @@ class Device(object):
         self.medium = medium
         self.messages = []
         self.m = ''
+        self.recived = '00000000'
         self.pointer = 0
         self.counter = 0
         self.attempts = 0
-        self.c_flag = False
         self.post_c = True
     
 
@@ -97,10 +97,9 @@ class Device(object):
     def _check_medium(self):
         """Checks if the medium is unoccupied"""
 
-        if self._get_bit() == 0:
-            return True
-        else:
-            return False
+        self.recived = self.recived[1:] + str(self._get_bit())
+        return self.recived.endswith('00000000')
+
 
     
     def _check_collision(self):
@@ -110,8 +109,8 @@ class Device(object):
 
         return self.pointer > 0
 
-
-    def resolve_collision(self):
+    
+    def _resolve_collision(self):
         """Handles collisions if such ocuur"""
 
         self.send_jam()
@@ -129,16 +128,12 @@ class Device(object):
         """Represents transmitting procedure, 
         Decides what a device should do in this cycle 
         """
-
-        if self.c_flag:
-            self.resolve_collision()
-        elif not self.m:
+           
+        if not self.m:
             self.next_message()
-        elif not self._check_medium() and self.post_c:
-            if self._check_collision():
-                self.c_flag = True
-            else:
-                self.wait(8)
+        elif not self._check_medium() and self.post_c 
+                and self._check_collision():
+            self._resolve_collision()                
         elif self.counter > 0 and self.post_c:
             self.counter -= 1
         else:
